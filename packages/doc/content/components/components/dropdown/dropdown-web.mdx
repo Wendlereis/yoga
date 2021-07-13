@@ -17,7 +17,9 @@
 ### with selected option
 
 ```javascript
+const ref = React.useRef()
 <Dropdown
+  ref={ref}
   label="Search by your City"
   options={[
     { label: 'San Diego', value: 'san-diego', selected: true },

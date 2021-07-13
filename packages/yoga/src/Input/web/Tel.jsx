@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import Input from './Input';
 
-const Tel = props => <Input {...props} type="tel" />;
+const TelRenderer = (props, ref) => <Input {...props} ref={ref} type="tel" />;
+
+const Tel = forwardRef(TelRenderer);
 
 export default Tel;

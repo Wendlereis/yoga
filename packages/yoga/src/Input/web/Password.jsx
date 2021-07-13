@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, forwardRef } from 'react';
 import styled from 'styled-components';
 import { bool, string, shape } from 'prop-types';
 import { Visibility, VisibilityOff } from '@gympass/yoga-icons';
@@ -80,56 +80,58 @@ const IconWrapper = styled.div`
   `}
 `;
 
-const Password = ({ disabled, style, className, full, ...props }) => {
-  const [showPassword, toggleShowPassword] = useState(false);
-  const inputRef = useRef(null);
+const Password = forwardRef(
+  ({ disabled, style, className, full, ...props }, ref) => {
+    const [showPassword, toggleShowPassword] = useState(false);
+    const inputRef = ref || useRef(null);
 
-  useEffect(() => {
-    const { current: element } = inputRef;
+    useEffect(() => {
+      const { current: element } = inputRef;
 
-    if (element.value.length) {
-      element.setSelectionRange(element.value.length, element.value.length);
-    }
-  }, [showPassword]);
+      if (element.value.length) {
+        element.setSelectionRange(element.value.length, element.value.length);
+      }
+    }, [showPassword]);
 
-  const togglePassword = e => {
-    if (e.type === 'click' || e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      toggleShowPassword(!showPassword);
-    }
+    const togglePassword = e => {
+      if (e.type === 'click' || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        toggleShowPassword(!showPassword);
+      }
 
-    if (e.type === 'click') {
-      inputRef.current.focus();
-    }
-  };
+      if (e.type === 'click') {
+        inputRef.current.focus();
+      }
+    };
 
-  return (
-    <Wrapper style={style} className={className} full={full}>
-      <StyledInput
-        {...props}
-        disabled={disabled}
-        full={full}
-        ref={inputRef}
-        cleanable={false}
-        type={showPassword ? 'text' : 'password'}
-      />
+    return (
+      <Wrapper style={style} className={className} full={full}>
+        <StyledInput
+          {...props}
+          disabled={disabled}
+          full={full}
+          ref={inputRef}
+          cleanable={false}
+          type={showPassword ? 'text' : 'password'}
+        />
 
-      <IconWrapper
-        tabIndex={disabled ? null : 0}
-        onClick={togglePassword}
-        onKeyDown={togglePassword}
-        disabled={disabled}
-        role="button"
-      >
-        {showPassword ? (
-          <Visibility width={20} height={20} />
-        ) : (
-          <VisibilityOff width={20} height={20} />
-        )}
-      </IconWrapper>
-    </Wrapper>
-  );
-};
+        <IconWrapper
+          tabIndex={disabled ? null : 0}
+          onClick={togglePassword}
+          onKeyDown={togglePassword}
+          disabled={disabled}
+          role="button"
+        >
+          {showPassword ? (
+            <Visibility width={20} height={20} />
+          ) : (
+            <VisibilityOff width={20} height={20} />
+          )}
+        </IconWrapper>
+      </Wrapper>
+    );
+  },
+);
 
 Password.propTypes = {
   className: string,

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import styled from 'styled-components';
 import Downshift from 'downshift';
 import {
@@ -274,78 +274,73 @@ const getSelectedOption = options =>
   options.find(item => item.selected === true);
 
 /** Gympass Dropdown is a multiple choice type of menu. */
-const Dropdown = ({
-  error,
-  label,
-  disabled,
-  full,
-  options,
-  onChange,
-  ...rest
-}) => (
-  <Downshift
-    initialSelectedItem={getSelectedOption(options)}
-    selectedItemChanged={(prevItem, item) => prevItem !== item}
-    itemToString={item => (item ? item.label : '')}
-    onChange={onChange}
-  >
-    {({
-      getInputProps,
-      getItemProps,
-      getRootProps,
-      getMenuProps,
-      getToggleButtonProps,
-      selectedItem,
-      highlightedIndex,
-      isOpen,
-    }) => (
-      <Wrapper full={full} {...getRootProps()} {...rest}>
-        <Selector
-          isOpen={isOpen}
-          disabled={disabled}
-          error={error}
-          selected={selectedItem !== null}
-        >
-          <Input
-            readOnly
-            placeholder={label}
-            disabled={disabled}
-            selected={selectedItem !== null}
-            {...getInputProps()}
-          />
-          <Button
+const Dropdown = forwardRef(
+  ({ error, label, disabled, full, options, onChange, ...rest }, ref) => (
+    <Downshift
+      initialSelectedItem={getSelectedOption(options)}
+      selectedItemChanged={(prevItem, item) => prevItem !== item}
+      itemToString={item => (item ? item.label : '')}
+      onChange={onChange}
+    >
+      {({
+        getInputProps,
+        getItemProps,
+        getRootProps,
+        getMenuProps,
+        getToggleButtonProps,
+        selectedItem,
+        highlightedIndex,
+        isOpen,
+      }) => (
+        <Wrapper full={full} {...getRootProps()} {...rest}>
+          <Selector
             isOpen={isOpen}
             disabled={disabled}
-            {...getToggleButtonProps()}
+            error={error}
+            selected={selectedItem !== null}
           >
-            <ArrowIcon
-              isOpen={isOpen}
-              selected={selectedItem !== null}
+            <Input
+              ref={ref}
+              readOnly
+              placeholder={label}
               disabled={disabled}
+              selected={selectedItem !== null}
+              {...getInputProps()}
             />
-          </Button>
-        </Selector>
+            <Button
+              isOpen={isOpen}
+              disabled={disabled}
+              {...getToggleButtonProps()}
+            >
+              <ArrowIcon
+                isOpen={isOpen}
+                selected={selectedItem !== null}
+                disabled={disabled}
+              />
+            </Button>
+          </Selector>
 
-        {isOpen && (
-          <OptionsList selected={selectedItem !== null} {...getMenuProps()}>
-            {options.map((item, index) => (
-              <Option
-                {...getItemProps({
-                  key: item.value,
-                  item,
-                  isSelected: selectedItem === item,
-                  highlighted: highlightedIndex === index,
-                })}
-              >
-                {item.label}
-              </Option>
-            ))}
-          </OptionsList>
-        )}
-        {error && <Helper error={error} />}
-      </Wrapper>
-    )}
-  </Downshift>
+          {isOpen && (
+            <OptionsList selected={selectedItem !== null} {...getMenuProps()}>
+              {options.map((item, index) => (
+                <Option
+                  {...getItemProps({
+                    key: item.value,
+                    item,
+                    isSelected: selectedItem === item,
+                    highlighted: highlightedIndex === index,
+                  })}
+                >
+                  {item.label}
+                </Option>
+              ))}
+            </OptionsList>
+          )}
+          {error && <Helper error={error} />}
+        </Wrapper>
+      )}
+    </Downshift>
+  ),
 );
 
 Dropdown.propTypes = {
